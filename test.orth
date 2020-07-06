@@ -1,3 +1,40 @@
+{
+  make-vec
+  :record vpush!
+}
+; ( -- rec )
+:make-record @
+
+{
+  swap
+  make-record
+  swap vpush!
+  swap vpush!
+}
+; ( x y -- point )
+:make-point @
+
+{ 1 vget }
+:point-x @
+
+{ 2 vget }
+; ( point -- y-val)
+:point-y @
+
+10 16 make-point
+:pt @
+
+"string"
+:str @
+
+str show-top
+
+pt
+pt point-x
+pt point-y
+show-stack
+show-env
+
 10 :val @
 
 make-vec
@@ -6,5 +43,9 @@ val vpush!
 12 vpush!
 :vec @
 
-show-top
-show-ctx
+{ 13 vpush! }
+:push13! @
+
+vec push13!
+
+show-env
