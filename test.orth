@@ -1,0 +1,10 @@
+10 :val @
+
+make-vec
+val vpush!
+11 vpush!
+12 vpush!
+:vec @
+
+show-top
+show-ctx

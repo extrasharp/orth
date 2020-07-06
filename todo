@@ -1,0 +1,167 @@
+not untyped
+
+
+
+untyped forth
+
+; comment
+/// doc string
+( stack effect ) ; has to be on one line
+
+use u64 or something
+basic type can be used for
+pointers
+ints
+floats
+symbol ; pointer to name in symbol table or current env or something
+boolean
+
+basic containers
+map
+  make-map ( -- map )
+  madd! ( map key val -- map )
+  mrem! ( map key -- map )
+arr // fixed size vector
+  make-arr ( size -- arr )
+vec
+  make-vec ( -- vec ) // untyped, so its just of vec of u64, or you could specify a type, at least a size. like u8
+  vget ( vec at -- result )
+  vset! ( vec at to -- )
+  vpush!
+  vpop!
+
+other containers
+string
+; vec of u8s, utf8 encoded (thanks rust)
+
+env
+; map of string -> value
+; supposed to work for namespaces and stuff too
+
+record
+; vec with named setters and getters
+
+:symbol
+"string"
+{ quotation }
+
+:tag-this @
+  whatever-follows
+  ; is now referanceable by tag-this
+
+{ ; ( blah -- )
+  blah blah blah
+} :symbol @
+
+:symbol
+
+;
+
+{
+  something do
+}
+:fn @
+
+10
+:val @
+
+fn       // calls the quotation
+:fn read // pushes the quotation itself
+:fn ref  // pushes a reference
+
+val       // copies val to stack
+:val read // copies val to stack
+:val ref  // pushes a reference
+
+:val ref 10 +
+
+/////
+
+:some-map @with
+  make-map
+  s" hello1" 1 madd!
+  s" hello2" 2 madd!
+  s" hello3" 3 madd!
+  drop
+
+@ can only be at top level
+
+:make-thing @ {
+  2 make-record
+    0
+    make-map
+    s" hello1" 1 madd!
+    s" hello2" 2 madd!
+    s" hello3" 3 madd!
+    rset!
+
+    1
+    false
+    rset!
+}
+
+/////
+
+result
+// record
+
+<'ok val>
+<'err Error>
+
+:Ok @ {
+  3 make-arr
+  dup 0 :result aset!
+  dup 1 :ok aset!
+  dup 2 -rot aset!
+}
+
+:make-adder @ {
+  // pop first val off sttack
+  { . + }
+}
+
+:add1 @
+  1 make-adder
+
+1
+{ 1 + }
+
+
+
+:some-var @ 0
+
+some-var
+:some-var read
+:some-var ref
+
+: Ok ( val -- result )
+  3 make-arr
+  dup 0 'result aset!
+  dup 1 'ok aset!
+  dup 2 -rot aset!
+  ;
+
+: Err ( val -- result )
+  2 make-arr
+  dup 0 'err aset!
+  dup 1 -rot aset!
+  ;
+
+: ok? ( result -- t/f )
+  0 aget
+  'ok =
+  ;
+
+: unwrap ( result -- val ) // can panic
+  1 aget
+  ok?
+    [ ]
+    [ panic ]
+    if
+  ;
+
+
+
+err unwrap
+
+
